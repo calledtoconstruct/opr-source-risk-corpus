@@ -5,6 +5,9 @@ import subprocess
 from typing import NamedTuple
 
 _PRE = re.compile(r"(?i)(alpha|beta|rc|pre|dev|nightly|snapshot)")
+_JUNK = re.compile(
+    r"(?i)(^anyevent\b|_v\d|[-_]start$|start_of_|alacritty_terminal)"
+)
 _SEMVER = re.compile(
     r"v?(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?"
 )
@@ -17,10 +20,16 @@ class Version(NamedTuple):
     tag: str
 
 
-def parse_tag(tag: str) -> Version | None:
+def parse_tag(tag: str, *, prefix: str | None = None) -> Version | None:
     name = tag.split("/")[-1]
-    if _PRE.search(name):
+    if _PRE.search(name) or _JUNK.search(name):
         return None
+    if prefix:
+        if not name.startswith(prefix):
+            return None
+        rest = name[len(prefix) :]
+        if prefix.lower() == "v" and rest and not rest[0].isdigit():
+            return None
     m = _SEMVER.search(name)
     if not m:
         return None
@@ -32,10 +41,12 @@ def parse_tag(tag: str) -> Version | None:
     )
 
 
-def pick_major_milestones(tags: list[str], *, max_majors: int = 5) -> list[str]:
+def pick_major_milestones(
+    tags: list[str], *, max_majors: int = 5, prefix: str | None = None
+) -> list[str]:
     best: dict[int, Version] = {}
     for tag in tags:
-        ver = parse_tag(tag)
+        ver = parse_tag(tag, prefix=prefix)
         if ver is None:
             continue
         cur = best.get(ver.major)

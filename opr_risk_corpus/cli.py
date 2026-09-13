@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
 from opr_risk_corpus.projects import load_projects
 from opr_risk_corpus.report import aggregate, render_markdown
+from opr_risk_corpus.local_opr import default_pkgs, run_local_opr
 from opr_risk_corpus.runner import default_scanner, run_corpus
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -33,11 +35,40 @@ def main(argv: list[str] | None = None) -> int:
     listed = sub.add_parser("list", help="print the curated project list")
     listed.add_argument("--projects", type=Path, default=ROOT / "projects.yaml")
 
+    demo = sub.add_parser(
+        "demo-opr",
+        help="tiny local OPR: synthetic db + CVE sidecar + risk sidecar",
+    )
+    demo.add_argument("--packages", type=Path, default=ROOT / "demo-packages.yaml")
+    demo.add_argument("--repo-root", type=Path, default=ROOT / "local-opr")
+    demo.add_argument("--pkgs", type=Path, default=default_pkgs())
+    demo.add_argument("--scanner", type=Path, default=default_scanner())
+    demo.add_argument("--max-majors", type=int, default=1)
+    demo.add_argument("--timeout", type=int, default=600)
+    demo.add_argument("--limit", type=int, default=0)
+
     args = parser.parse_args(argv)
     if args.cmd == "list":
         for p in load_projects(args.projects):
             print(f"{p['repo']}\t{p['git']}")
         return 0
+
+    if args.cmd == "demo-opr":
+        if args.limit:
+            os.environ["OPR_DEMO_LIMIT"] = str(args.limit)
+        paths = run_local_opr(
+            args.packages,
+            repo_root=args.repo_root,
+            pkgs=args.pkgs,
+            scanner=args.scanner,
+            max_majors=args.max_majors,
+            timeout=args.timeout,
+        )
+        for key, path in paths.items():
+            print(f"{key}: {path}")
+            if key in {"advisories", "risk"} and path.is_file():
+                print(path.read_text(encoding="utf-8")[:4000])
+        return 0 if paths.get("advisories", Path()).is_file() else 1
 
     if args.cmd == "report":
         return _write_report(args.out_dir)

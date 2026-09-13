@@ -33,6 +33,18 @@ Needs `git`, Python 3, PyYAML, and the scanner (sibling checkout or
 Defaults: 3 majors per repo, 600s timeout per scan. Kernel-sized trees
 are not in the list on purpose.
 
+## Local OPR (CVE sidecar + risk sidecar)
+
+Needs a checkout of `omarchy-pkgs` next to this repo (or `OMARCHY_PKGS`).
+Builds a synthetic `edge/x86_64` db for the packages in `demo-packages.yaml`,
+runs `fetch-advisories` + `sync-advisories --no-sign`, scans each git ref,
+writes `omarchy.advisories.json` and `omarchy.risk.json` side by side.
+
+```bash
+./bin/opr-source-risk-corpus demo-opr --limit 1 --max-majors 1 --repo-root ./local-opr
+ls local-opr/edge/x86_64/
+```
+
 ## Tests
 
 ```bash

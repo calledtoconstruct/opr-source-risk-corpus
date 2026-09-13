@@ -24,5 +24,13 @@ def load_projects(path: Path) -> list[dict[str, Any]]:
         repo = str(item["repo"])
         name = str(item.get("name") or repo.split("/")[-1])
         git = str(item.get("git") or f"https://github.com/{repo}.git")
-        out.append({"repo": repo, "name": name, "git": git})
+        prefix = item.get("tag_prefix")
+        out.append(
+            {
+                "repo": repo,
+                "name": name,
+                "git": git,
+                "tag_prefix": str(prefix) if prefix else None,
+            }
+        )
     return out

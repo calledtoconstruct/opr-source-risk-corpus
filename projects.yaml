@@ -6,6 +6,7 @@ projects:
   - repo: opencontainers/runc
   - repo: containers/podman
   - repo: nginx/nginx
+    tag_prefix: release-
   - repo: caddyserver/caddy
   - repo: neovim/neovim
   - repo: tmux/tmux
@@ -16,8 +17,10 @@ projects:
   - repo: i3/i3
   - repo: swaywm/sway
   - repo: alacritty/alacritty
+    tag_prefix: v
   - repo: git/git
   - repo: syncthing/syncthing
   - repo: restic/restic
   - repo: OpenVPN/openvpn
+    tag_prefix: v
   - repo: prometheus/node_exporter

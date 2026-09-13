@@ -102,7 +102,9 @@ def run_corpus(
             )
             written.append(fail)
             continue
-        refs = pick_major_milestones(tags, max_majors=max_majors)
+        refs = pick_major_milestones(
+            tags, max_majors=max_majors, prefix=project.get("tag_prefix")
+        )
         if not refs:
             print("  no semver majors", file=log)
             continue

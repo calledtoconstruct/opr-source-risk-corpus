@@ -1,0 +1,15 @@
+# Tiny local OPR: a few packages we can publish a synthetic db for,
+# then run CVE ingest + source-risk and look at both sidecars.
+packages:
+  - pkgname: mise-bin
+    git: https://github.com/jdx/mise.git
+    tag_prefix: v
+    purl: "pkg:github/jdx/mise@{version}"
+  - pkgname: jq
+    git: https://github.com/jqlang/jq.git
+    tag_prefix: jq-
+    purl: "pkg:github/jqlang/jq@{version}"
+  - pkgname: ripgrep
+    git: https://github.com/BurntSushi/ripgrep.git
+    tag_prefix: ""
+    purl: "pkg:cargo/ripgrep@{version}"
