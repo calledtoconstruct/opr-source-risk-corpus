@@ -1,0 +1,23 @@
+# Curated Linux-world GitHub projects for opr-source-risk v1.
+# Major milestones = latest tag per major semver (rc/beta skipped), capped at run time.
+projects:
+  - repo: systemd/systemd
+  - repo: util-linux/util-linux
+  - repo: opencontainers/runc
+  - repo: containers/podman
+  - repo: nginx/nginx
+  - repo: caddyserver/caddy
+  - repo: neovim/neovim
+  - repo: tmux/tmux
+  - repo: jqlang/jq
+  - repo: BurntSushi/ripgrep
+  - repo: fish-shell/fish-shell
+  - repo: WireGuard/wireguard-tools
+  - repo: i3/i3
+  - repo: swaywm/sway
+  - repo: alacritty/alacritty
+  - repo: git/git
+  - repo: syncthing/syncthing
+  - repo: restic/restic
+  - repo: OpenVPN/openvpn
+  - repo: prometheus/node_exporter
